@@ -1,13 +1,3 @@
 #!/bin/bash
 
-# Define the parent directory
-parent_dir="./"
-
-# Loop through second-level directories and create zip files
-for dir in "$parent_dir"*/; do
-    if [ -d "$dir" ] && [ ! -e "${dir}.*" ]; then
-        base_dir=$(basename "$dir")
-        zip_file_name="${base_dir}.zip"
-        echo zip -r "$zip_file_name" "$dir"
-    fi
-done
+find "pdfs" -mindepth 2 -maxdepth 2 -type d \! -name ".*" -exec sh -c 'base_dir=$(basename "$1"); year=$(basename "$(dirname "$1")"); month=$(basename "$1"); if [ ${#month} -eq 1 ]; then month="0$month"; fi; zip -r "releases/${year}-${month}.zip" "$1"' _ {} \;
