@@ -2,7 +2,9 @@
 
 An Archive of Uttarakhand Gazette Notifications.
 
-Downloaded from https://gazettes.uk.gov.in/
+Downloaded from https://gazettes.uk.gov.in/.
+
+Please check Releases for download.
 
 ## License
 
