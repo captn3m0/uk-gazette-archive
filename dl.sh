@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script downloads all valid gazette files
+# by brute-forcing all valid filenames (=date.pdf)
+
 start_date="01 JAN 2006"
 current_date=$(date +"%d %b %Y")
 
@@ -9,7 +12,7 @@ download_gazette() {
     dir="pdfs/20$(date -d "$1" +"%y/%m")"
     url="https://gazettes.uk.gov.in/entry/gazette/gz$formatted_date.pdf"
     mkdir -p "$dir"
-    wget -nc -nv "$url" -O "$dir/$formatted_date.pdf"
+    wget -q -nc -nv "$url" -O "$dir/$formatted_date.pdf"
 }
 
 # Export the function so GNU Parallel can access it
@@ -27,3 +30,12 @@ parallel -j 100 download_gazette ::: "${dates_to_download[@]}"
 
 find . -type f -empty -delete
 find . -type d -empty -delete
+
+# Now, we need to download the information files (HTML)
+# that contain the metadata for each Gazette file
+wget -i input.txt  --recursive --adjust-extension --level 1 --ignore-tags=img,link  --relative --no-parent
+
+# Now, we parse the metadata from the HTML files
+# and save it as a CSV file
+# in some cases, this will make a few further requests
+python generate.py
